@@ -14,7 +14,6 @@ import java.util.Random;
 @LineMessageHandler
 public class MainController {
 
-
     Random rand = new Random();
     private String [] replymessage = new String []{
             "恩恩，合理.",
