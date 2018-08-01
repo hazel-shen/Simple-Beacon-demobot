@@ -1,6 +1,5 @@
 package com.linecorp.spoon.utils;
 
-import com.linecorp.spoon.dto.EventInfoDto;
 import redis.clients.jedis.Jedis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,7 @@ public class RedisConnection {
                              String REDIS_AUTH) {
         jedis = new Jedis(REDIS_HOST, REDIS_PORT);
         jedis.auth(REDIS_AUTH);
-        if(jedis.isConnected()
+        if(jedis.isConnected())
             logger.info("connected");
         jedis.ping();
         logger.info("init.....");
@@ -29,7 +28,6 @@ public class RedisConnection {
         jedis.set(key, value);
         logger.info("set " + key + " as " + value);
         jedis.close();
-
     }
 
     public String getRedis (String key) {

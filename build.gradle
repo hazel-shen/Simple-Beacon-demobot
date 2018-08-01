@@ -31,6 +31,8 @@ dependencies {
     compile group: 'com.linecorp.bot', name: 'line-bot-api-client', version: '1.18.0'
     compile group: 'redis.clients', name: 'jedis', version: '2.9.0'
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.4'
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.6'
+
 
 	compileOnly "org.projectlombok:lombok:1.16.16"
     testCompile('org.springframework.boot:spring-boot-starter-test')
