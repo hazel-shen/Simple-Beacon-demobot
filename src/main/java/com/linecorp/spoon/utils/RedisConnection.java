@@ -19,7 +19,7 @@ public class RedisConnection {
                              String REDIS_AUTH) {
         jedis = new Jedis(REDIS_HOST, REDIS_PORT);
         jedis.auth(REDIS_AUTH);
-        if(jedis.isConnected())
+        if(jedis.isConnected()
             logger.info("connected");
         jedis.ping();
         logger.info("init.....");
