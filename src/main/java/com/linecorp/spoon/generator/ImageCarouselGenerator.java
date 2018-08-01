@@ -1,4 +1,4 @@
-package com.linecorp.spoon.Generator;
+package com.linecorp.spoon.generator;
 
 import com.linecorp.bot.model.action.URIAction;
 import com.linecorp.bot.model.message.TemplateMessage;

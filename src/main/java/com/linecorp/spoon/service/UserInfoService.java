@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
-import com.linecorp.spoon.Generator.ImageCarouselGenerator;
-import com.linecorp.spoon.Generator.PokemonGenerator;
+import com.linecorp.spoon.generator.ImageCarouselGenerator;
+import com.linecorp.spoon.generator.PokemonGenerator;
 import com.linecorp.spoon.dto.UserInfoDto;
 import com.linecorp.spoon.utils.RedisConnection;
 import org.slf4j.Logger;
@@ -14,9 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.awt.*;
-import java.io.IOException;
 
 @Component
 public class UserInfoService {

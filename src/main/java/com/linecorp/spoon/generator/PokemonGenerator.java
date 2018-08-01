@@ -1,4 +1,4 @@
-package com.linecorp.spoon.Generator;
+package com.linecorp.spoon.generator;
 
 import com.linecorp.spoon.utils.RedisConnection;
 import org.slf4j.Logger;
