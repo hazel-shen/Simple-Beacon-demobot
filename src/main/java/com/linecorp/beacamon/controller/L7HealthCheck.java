@@ -1,4 +1,4 @@
-package com.linecorp.spoon.controller;
+package com.linecorp.beacamon.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

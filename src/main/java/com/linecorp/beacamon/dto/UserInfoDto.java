@@ -1,4 +1,4 @@
-package com.linecorp.spoon.dto;
+package com.linecorp.beacamon.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

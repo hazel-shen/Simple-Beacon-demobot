@@ -1,4 +1,4 @@
-package com.linecorp.spoon.utils;
+package com.linecorp.beacamon.utils;
 
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -36,6 +36,12 @@ public class RedisConnection {
         logger.info("get " + key + " as " + value);
         jedis.close();
         return value;
+    }
+
+    public void zadd (String field, Integer score,  String key) {
+        logger.info("update field: " + field + " as { " + key + ", " + score + "}" );
+        jedis.zadd(field, score, key);
+        jedis.close();
     }
 
     @PreDestroy

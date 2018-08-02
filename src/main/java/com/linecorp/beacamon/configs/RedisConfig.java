@@ -1,9 +1,8 @@
-package com.linecorp.spoon.configs;
+package com.linecorp.beacamon.configs;
 
-import com.linecorp.spoon.utils.RedisConnection;
+import com.linecorp.beacamon.utils.RedisConnection;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration

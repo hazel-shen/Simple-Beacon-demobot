@@ -1,4 +1,4 @@
-package com.linecorp.spoon.utils;
+package com.linecorp.beacamon.utils;
 
 
 import org.slf4j.Logger;

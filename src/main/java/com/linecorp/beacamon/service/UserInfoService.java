@@ -1,14 +1,14 @@
-package com.linecorp.spoon.service;
+package com.linecorp.beacamon.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
-import com.linecorp.spoon.generator.ImageCarouselGenerator;
-import com.linecorp.spoon.generator.PokemonGenerator;
-import com.linecorp.spoon.dto.UserInfoDto;
-import com.linecorp.spoon.utils.RedisConnection;
+import com.linecorp.beacamon.generator.ImageCarouselGenerator;
+import com.linecorp.beacamon.generator.BeacamonGenerator;
+import com.linecorp.beacamon.dto.UserInfoDto;
+import com.linecorp.beacamon.utils.RedisConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,26 +18,26 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserInfoService {
 
-    Logger logger = LoggerFactory.getLogger(PokemonGenerator.class);
+    Logger logger = LoggerFactory.getLogger(BeacamonGenerator.class);
 
     @Autowired
     RedisConnection redisConnection;
 
     @Autowired
-    PokemonGenerator pokemonGenerator;
+    BeacamonGenerator beacamonGenerator;
 
     @Autowired
     ImageCarouselGenerator imageCarouselGenerator;
 
-    @Value("${NO_POKE}")
-    String NO_POKE;
+    @Value("${NO_BEACAMON}")
+    String NO_BEACAMON;
 
 
-    @Value("${POKE_ONE}")
-    String POKE_ONE;
+    @Value("${BEACAMON_ONE}")
+    String BEACAMON_ONE;
 
-    @Value("${POKE_ONE_URL}")
-    String POKE_ONE_URL;
+    @Value("${BEACAMON_ONE_URL}")
+    String BEACAMON_ONE_URL;
 
 
     ObjectMapper mapper = new ObjectMapper();
@@ -61,18 +61,18 @@ public class UserInfoService {
             return textMessage;
         } catch (Exception e) {
             logger.warn("Warning:" + String.valueOf(e));
-            String poke = pokemonGenerator.getPokemon();
+            String poke = beacamonGenerator.getBeacamon();
             return generateTemplate(poke, uuid);
         }
     }
 
     private Message generateTemplate (String poke, String uuid) {
-        if(poke.equals(NO_POKE)) {
-            TextMessage textMessage = new TextMessage(NO_POKE);
+        if(poke.equals(NO_BEACAMON)) {
+            TextMessage textMessage = new TextMessage(NO_BEACAMON);
             return textMessage;
         } else {
             TemplateMessage templateMessage = imageCarouselGenerator.getTemplate(poke);
-            saveUserInfo(uuid,POKE_ONE, 1);
+            saveUserInfo(uuid,BEACAMON_ONE, 1);
             return templateMessage;
         }
 
@@ -81,9 +81,14 @@ public class UserInfoService {
     private TextMessage upgradeLevel (String uuid, String pokeName, Integer pokeLevel) {
         pokeLevel = pokeLevel + 1;
         saveUserInfo(uuid, pokeName, pokeLevel);
+        updateRanking(uuid, pokeLevel);
         TextMessage textMessage =
-                new TextMessage("Your Pokemon name: " + pokeName
-                        + "\nYour Pokemon level: " + pokeLevel);
+                new TextMessage("Your Beacamon name: " + pokeName
+                        + "\nYour Beacamon level: " + pokeLevel);
         return textMessage;
+    }
+
+    private void updateRanking (String uuid, Integer pokeLevel) {
+        redisConnection.zadd("PokeLevel", pokeLevel, uuid);
     }
 }

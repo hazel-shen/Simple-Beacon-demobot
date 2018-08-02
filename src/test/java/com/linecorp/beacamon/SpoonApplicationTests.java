@@ -1,7 +1,7 @@
-package com.linecorp.spoon;
+package com.linecorp.beacamon;
 
 
-import com.linecorp.spoon.controller.BotController;
+import com.linecorp.beacamon.controller.BotController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

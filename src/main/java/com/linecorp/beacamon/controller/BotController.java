@@ -1,4 +1,4 @@
-package com.linecorp.spoon.controller;
+package com.linecorp.beacamon.controller;
 
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.PushMessage;
@@ -13,10 +13,10 @@ import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
-import com.linecorp.spoon.generator.ImageCarouselGenerator;
-import com.linecorp.spoon.generator.PokemonGenerator;
-import com.linecorp.spoon.service.UserInfoService;
-import com.linecorp.spoon.utils.RedisConnection;
+import com.linecorp.beacamon.generator.ImageCarouselGenerator;
+import com.linecorp.beacamon.generator.BeacamonGenerator;
+import com.linecorp.beacamon.service.UserInfoService;
+import com.linecorp.beacamon.utils.RedisConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class BotController {
     private LineMessagingClient client;
 
     @Autowired
-    PokemonGenerator pokemonGenerator;
+    BeacamonGenerator beacamonGenerator;
 
     @Autowired
     ImageCarouselGenerator imageCarouselGenerator;
@@ -45,8 +45,8 @@ public class BotController {
     @Autowired
     UserInfoService userInfoService;
 
-    @Value("${NO_POKE}")
-    String NO_POKE;
+    @Value("${NO_BEACAMON}")
+    String NO_BEACAMON;
 
     @Value("${HARDWARE_ID}")
     String HARDWARE_ID;
@@ -67,13 +67,13 @@ public class BotController {
     public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
 
 
-        String poke = pokemonGenerator.getPokemon();
+        String poke = beacamonGenerator.getBeacamon();
 
-        TextMessage textMessage = new TextMessage(NO_POKE);
+        TextMessage textMessage = new TextMessage(NO_BEACAMON);
         logger.info("poke generated: " + poke);
         TemplateMessage pokeMessage = imageCarouselGenerator.getTemplate(poke);
 
-        if(poke.equals(NO_POKE))
+        if(poke.equals(NO_BEACAMON))
             pushMessage(event.getSource().getSenderId() ,textMessage);
         else
             pushMessage(event.getSource().getSenderId() ,pokeMessage);
