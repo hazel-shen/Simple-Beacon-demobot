@@ -1,6 +1,7 @@
 package com.linecorp.spoon;
 
 
+import com.linecorp.spoon.controller.BotController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +15,7 @@ public class SpoonApplicationTests {
 
 	@Test
 	public void contextLoads() {
-//		assertThat(controller).isNotNull();
+		assertThat(BotController.class).isNotNull();
 	}
 
 }
