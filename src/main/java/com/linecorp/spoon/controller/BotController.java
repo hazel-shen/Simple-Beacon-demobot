@@ -92,13 +92,14 @@ public class BotController {
 
         String hwid = event.getBeacon().getHwid();
         String beaconMessage = event.getBeacon().getDeviceMessageAsHex();
-        logger.info(event.getBeacon().getDeviceMessageAsHex());
+        logger.info("哈為哀低"+ HARDWARE_ID + "hwid:" + hwid);
+        logger.info("乜寫居"+BEACON_MESSAGE + "BM" + beaconMessage);
         if (hwid.equals(HARDWARE_ID) && beaconMessage.equals(BEACON_MESSAGE)) {
+            logger.info("對了");
             Message message = userInfoService.getTemplateForUser(event.getSource().getUserId());
             pushMessage(event.getSource().getSenderId() ,message);
         } else {
-            logger.info(HARDWARE_ID);
-            logger.info(BEACON_MESSAGE);
+            logger.info("錯了");
             logger.info("Not correct hardware ID");
         }
 
