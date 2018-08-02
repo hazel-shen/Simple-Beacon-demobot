@@ -1,12 +1,13 @@
 package com.linecorp.spoon.utils;
 
+import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PreDestroy;
 
-
+@Component
 public class RedisConnection {
 
     private Jedis jedis;
