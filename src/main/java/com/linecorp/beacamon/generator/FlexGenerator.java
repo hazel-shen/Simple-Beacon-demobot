@@ -7,26 +7,38 @@ import com.linecorp.bot.model.message.flex.container.Bubble;
 import com.linecorp.bot.model.message.flex.unit.FlexFontSize;
 import com.linecorp.bot.model.message.flex.unit.FlexLayout;
 import com.linecorp.bot.model.message.flex.unit.FlexMarginSize;
+import org.springframework.stereotype.Component;
 
 import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 
+@Component
 public class FlexGenerator implements Supplier<FlexMessage>{
 
-    @Override
-    public FlexMessage get() {
+
+    public FlexMessage getFlexMessage(
+            String imageUrl,
+            String imageLabel,
+            String footerLabel,
+            String footerUrl,
+            String bodyText,
+            String firstBoxTitle,
+            String firstBoxText,
+            String secondBoxtTitle,
+            String secondBoxText,
+            String altText) {
         final Image heroBlock =
                 Image.builder()
-                        .url("https://example.com/cafe.jpg")
+                        .url(imageUrl)
                         .size(Image.ImageSize.FULL_WIDTH)
                         .aspectRatio(Image.ImageAspectRatio.R20TO13)
                         .aspectMode(Image.ImageAspectMode.Cover)
-                        .action(new URIAction("label", "http://example.com"))
+                        .action(new URIAction(imageLabel, imageUrl))
                         .build();
 
-        final Box bodyBlock = createBodyBlock();
-        final Box footerBlock = createFooterBlock();
+        final Box bodyBlock = createBodyBlock(bodyText,firstBoxTitle, firstBoxText, secondBoxtTitle, secondBoxText);
+        final Box footerBlock = createFooterBlock(footerLabel, footerUrl);
         final Bubble bubble =
                 Bubble.builder()
                         .hero(heroBlock)
@@ -34,64 +46,123 @@ public class FlexGenerator implements Supplier<FlexMessage>{
                         .footer(footerBlock)
                         .build();
 
-        return new FlexMessage("ALT", bubble);
+        return new FlexMessage(altText, bubble);
     }
 
-    private Box createFooterBlock() {
+    public FlexMessage getFlexMessage(
+            String imageUrl,
+            String imageLabel,
+            String footerLabel,
+            String footerUrl,
+            String bodyText,
+            String altText) {
+        final Image heroBlock =
+                Image.builder()
+                        .url(imageUrl)
+                        .size(Image.ImageSize.FULL_WIDTH)
+                        .aspectRatio(Image.ImageAspectRatio.R20TO13)
+                        .aspectMode(Image.ImageAspectMode.Cover)
+                        .action(new URIAction(imageLabel, imageUrl))
+                        .build();
+
+        final Box bodyBlock = createBodyBlock(bodyText);
+        final Box footerBlock = createFooterBlock(footerLabel, footerUrl);
+        final Bubble bubble =
+                Bubble.builder()
+                        .hero(heroBlock)
+                        .body(bodyBlock)
+                        .footer(footerBlock)
+                        .build();
+
+        return new FlexMessage(altText, bubble);
+    }
+
+    private Box createFooterBlock(String footerLabel, String footerUrl) {
         final Spacer spacer = Spacer.builder().size(FlexMarginSize.SM).build();
-        final Button callAction = Button
-                .builder()
-                .style(Button.ButtonStyle.LINK)
-                .height(Button.ButtonHeight.SMALL)
-                .action(new URIAction("CALL", "tel:000000"))
-                .build();
-        final Separator separator = Separator.builder().build();
+//        final Button callAction = Button
+//                .builder()
+//                .style(Button.ButtonStyle.LINK)
+//                .height(Button.ButtonHeight.SMALL)
+//                .action(new URIAction("CALL", "tel:000000"))
+//                .build();
+//        final Separator separator = Separator.builder().build();
         final Button websiteAction =
                 Button.builder()
                         .style(Button.ButtonStyle.LINK)
                         .height(Button.ButtonHeight.SMALL)
-                        .action(new URIAction("WEBSITE", "https://example.com"))
+                        .action(new URIAction(footerLabel, footerUrl))
                         .build();
 
         return Box.builder()
                 .layout(FlexLayout.VERTICAL)
                 .spacing(FlexMarginSize.SM)
-                .contents(asList(spacer, callAction, separator, websiteAction))
+                .contents(asList(spacer, websiteAction))
                 .build();
     }
 
-    private Box createBodyBlock() {
+    private Box createBodyBlock(
+            String bodyText,
+            String firstBoxTitle,
+            String firstBoxText,
+            String secondBoxtTitle,
+            String secondBoxText
+    ) {
         final Text title =
                 Text.builder()
-                        .text("Brown Cafe")
+                        .text(bodyText)
                         .weight(Text.TextWeight.BOLD)
                         .size(FlexFontSize.XL)
                         .build();
 
-        final Box review = createReviewBox();
+        //final Box review = createReviewBox();
 
-        final Box info = createInfoBox();
+        final Box info = createInfoBox(firstBoxTitle, firstBoxText, secondBoxtTitle, secondBoxText);
 
         return Box.builder()
                 .layout(FlexLayout.VERTICAL)
-                .contents(asList(title, review, info))
+                .contents(asList(title, info))
                 .build();
     }
 
-    private Box createInfoBox() {
-        final Box place = Box
+
+    private Box createBodyBlock(
+            String bodyText
+    ) {
+        final Text title =
+                Text.builder()
+                        .text(bodyText)
+                        .weight(Text.TextWeight.BOLD)
+                        .size(FlexFontSize.XL)
+                        .build();
+
+        //final Box review = createReviewBox();
+
+
+        return Box.builder()
+                .layout(FlexLayout.VERTICAL)
+                .contents(asList(title))
+                .build();
+    }
+
+    private Box createInfoBox(
+            String firstBoxTitle,
+            String firstBoxText,
+            String secondBoxtTitle,
+            String secondBoxText
+    ) {
+        final Box firstBox = Box
                 .builder()
                 .layout(FlexLayout.BASELINE)
                 .spacing(FlexMarginSize.SM)
                 .contents(asList(
                         Text.builder()
-                                .text("Place")
+                                .text(firstBoxTitle)
                                 .color("#aaaaaa")
                                 .size(FlexFontSize.SM)
                                 .flex(1)
                                 .build(),
                         Text.builder()
-                                .text("Shinjuku, Tokyo")
+                                .text(firstBoxText)
                                 .wrap(true)
                                 .color("#666666")
                                 .size(FlexFontSize.SM)
@@ -99,19 +170,19 @@ public class FlexGenerator implements Supplier<FlexMessage>{
                                 .build()
                 ))
                 .build();
-        final Box time =
+        final Box sencondBox =
                 Box.builder()
                         .layout(FlexLayout.BASELINE)
                         .spacing(FlexMarginSize.SM)
                         .contents(asList(
                                 Text.builder()
-                                        .text("Time")
+                                        .text(secondBoxtTitle)
                                         .color("#aaaaaa")
                                         .size(FlexFontSize.SM)
                                         .flex(1)
                                         .build(),
                                 Text.builder()
-                                        .text("10:00 - 23:00")
+                                        .text(secondBoxText)
                                         .wrap(true)
                                         .color("#666666")
                                         .size(FlexFontSize.SM)
@@ -124,7 +195,7 @@ public class FlexGenerator implements Supplier<FlexMessage>{
                 .layout(FlexLayout.VERTICAL)
                 .margin(FlexMarginSize.LG)
                 .spacing(FlexMarginSize.SM)
-                .contents(asList(place, time))
+                .contents(asList(firstBox, sencondBox))
                 .build();
     }
 
@@ -147,5 +218,10 @@ public class FlexGenerator implements Supplier<FlexMessage>{
                 .margin(FlexMarginSize.MD)
                 .contents(asList(goldStar, goldStar, goldStar, goldStar, grayStar, point))
                 .build();
+    }
+
+    @Override
+    public FlexMessage get() {
+        return null;
     }
 }

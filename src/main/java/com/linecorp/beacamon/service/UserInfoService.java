@@ -2,10 +2,8 @@ package com.linecorp.beacamon.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.linecorp.bot.model.message.Message;
-import com.linecorp.bot.model.message.TemplateMessage;
+import com.linecorp.beacamon.dto.BeacamonDto;
 import com.linecorp.bot.model.message.TextMessage;
-import com.linecorp.beacamon.generator.ImageCarouselGenerator;
 import com.linecorp.beacamon.generator.BeacamonGenerator;
 import com.linecorp.beacamon.dto.UserInfoDto;
 import com.linecorp.beacamon.utils.RedisConnection;
@@ -26,19 +24,10 @@ public class UserInfoService {
     @Autowired
     BeacamonGenerator beacamonGenerator;
 
-    @Autowired
-    ImageCarouselGenerator imageCarouselGenerator;
-
     @Value("${NO_BEACAMON}")
     String NO_BEACAMON;
 
-
-    @Value("${BEACAMON_ONE}")
-    String BEACAMON_ONE;
-
-    @Value("${BEACAMON_ONE_URL}")
-    String BEACAMON_ONE_URL;
-
+    Integer INIT_LEVEL = 1;
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -52,43 +41,37 @@ public class UserInfoService {
         }
     }
 
-    public Message getTemplateForUser (String uuid){
+    public Boolean isHasBeacaMon (String uuid) {
+        try {
+            String userInfo = redisConnection.getRedis(uuid);
+            logger.info( uuid + " has BeacaMon" );
+            if (userInfo.equals(null)) {
+                logger.info("NOTING");
+            }
+            return true;
+        } catch (Exception e) {
+            logger.warn("Warning:" + String.valueOf(e));
+            logger.info( uuid + " doesn't have BeacaMon" );
+            return false;
+        }
+    }
+
+    public BeacamonDto getBeacamonName (String uuid){
 
         try {
             String userInfo = redisConnection.getRedis(uuid);
-            UserInfoDto userInfoDto = mapper.readValue(userInfo, UserInfoDto.class);
-            TextMessage textMessage = upgradeLevel( uuid, userInfoDto.getPokeName(),userInfoDto.getPokeLevel());
-            return textMessage;
+            logger.info("Read from userinfo: " + userInfo);
+            if (userInfo.equals(null)) {
+                logger.info("NOTING");
+            }
+            BeacamonDto beacamonDto = new BeacamonDto(NO_BEACAMON, "https://f4.bcbits.com/img/a0252633309_10.jpg");
+            return beacamonDto;
         } catch (Exception e) {
             logger.warn("Warning:" + String.valueOf(e));
-            String poke = beacamonGenerator.getBeacamon();
-            return generateTemplate(poke, uuid);
+            BeacamonDto beacamonDto = beacamonGenerator.getBeacamon();
+            if(!beacamonDto.getBeacamonName().equals(NO_BEACAMON))
+                saveUserInfo(uuid, beacamonDto.getBeacamonName(), INIT_LEVEL);
+            return beacamonDto;
         }
-    }
-
-    private Message generateTemplate (String poke, String uuid) {
-        if(poke.equals(NO_BEACAMON)) {
-            TextMessage textMessage = new TextMessage(NO_BEACAMON);
-            return textMessage;
-        } else {
-            TemplateMessage templateMessage = imageCarouselGenerator.getTemplate(poke);
-            saveUserInfo(uuid,BEACAMON_ONE, 1);
-            return templateMessage;
-        }
-
-    }
-
-    private TextMessage upgradeLevel (String uuid, String pokeName, Integer pokeLevel) {
-        pokeLevel = pokeLevel + 1;
-        saveUserInfo(uuid, pokeName, pokeLevel);
-        updateRanking(uuid, pokeLevel);
-        TextMessage textMessage =
-                new TextMessage("Your Beacamon name: " + pokeName
-                        + "\nYour Beacamon level: " + pokeLevel);
-        return textMessage;
-    }
-
-    private void updateRanking (String uuid, Integer pokeLevel) {
-        redisConnection.zadd("PokeLevel", pokeLevel, uuid);
     }
 }
