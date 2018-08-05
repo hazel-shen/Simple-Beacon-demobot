@@ -25,6 +25,12 @@ public class BeacamonGenerator {
     @Value("${BEACAMON_ONE_URL}")
     String BEACAMON_ONE_URL;
 
+    @Value("${BEACAMON_TWO}")
+    String BEACAMON_TWO;
+
+    @Value("${BEACAMON_TWO_URL}")
+    String BEACAMON_TWO_URL;
+
     @Value("${NO_BEACAMON}")
     String NO_BEACAMON;
 
@@ -36,8 +42,8 @@ public class BeacamonGenerator {
             BeacamonDto beacamonDto = new BeacamonDto(BEACAMON_ONE, BEACAMON_ONE_URL);
             return beacamonDto;
         } else {
-            logger.info("Poke not generated: " + NO_BEACAMON);
-            BeacamonDto beacamonDto = new BeacamonDto(NO_BEACAMON, "https://f4.bcbits.com/img/a0252633309_10.jpg");
+            logger.info("Poke generated: " + BEACAMON_TWO);
+            BeacamonDto beacamonDto = new BeacamonDto(BEACAMON_TWO, BEACAMON_TWO_URL);
             return beacamonDto;
         }
 

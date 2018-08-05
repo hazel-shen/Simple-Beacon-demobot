@@ -68,7 +68,7 @@ public class RedisConnection {
 
     public Set<String> getRank(String field) {
         Jedis jedis = jedisPool.getResource();
-        Set<String> result = jedis.zrange(field, 0, 100000);
+        Set<String> result = jedis.zrevrange(field, 0, 100000);
         logger.info("Ranking in: " + result);
         jedis.close();
         return result;

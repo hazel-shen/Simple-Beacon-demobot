@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserInfoService {
 
-    Logger logger = LoggerFactory.getLogger(BeacamonGenerator.class);
+    Logger logger = LoggerFactory.getLogger(UserInfoService.class);
 
     @Autowired
     RedisConnection redisConnection;
@@ -44,13 +44,12 @@ public class UserInfoService {
     public Boolean isHasBeacaMon (String uuid) {
         try {
             String userInfo = redisConnection.getRedis(uuid);
-            logger.info( uuid + " has BeacaMon" );
             if (userInfo.equals(null)) {
                 logger.info("NOTING");
             }
+            logger.info( uuid + " has BeacaMon" );
             return true;
         } catch (Exception e) {
-            logger.warn("Warning:" + String.valueOf(e));
             logger.info( uuid + " doesn't have BeacaMon" );
             return false;
         }
@@ -61,16 +60,15 @@ public class UserInfoService {
         try {
             String userInfo = redisConnection.getRedis(uuid);
             logger.info("Read from userinfo: " + userInfo);
-            if (userInfo.equals(null)) {
+            if (userInfo.equals(null) || userInfo.equals("null")) {
                 logger.info("NOTING");
             }
             BeacamonDto beacamonDto = new BeacamonDto(NO_BEACAMON, "https://f4.bcbits.com/img/a0252633309_10.jpg");
             return beacamonDto;
         } catch (Exception e) {
-            logger.warn("Warning:" + String.valueOf(e));
+            e.printStackTrace();
             BeacamonDto beacamonDto = beacamonGenerator.getBeacamon();
-            if(!beacamonDto.getBeacamonName().equals(NO_BEACAMON))
-                saveUserInfo(uuid, beacamonDto.getBeacamonName(), INIT_LEVEL);
+            saveUserInfo(uuid, beacamonDto.getBeacamonName(), INIT_LEVEL);
             return beacamonDto;
         }
     }

@@ -30,13 +30,19 @@ public class BeacaMonService {
     }
 
     public UserInfoDto upgradeLevel (String uuid) throws IOException {
-        String userIndfo = redisConnection.getRedis(uuid);
-        UserInfoDto userInfoDto = mapper.readValue(userIndfo, UserInfoDto.class);
+        String userInfo = redisConnection.getRedis(uuid);
+        UserInfoDto userInfoDto = mapper.readValue(userInfo, UserInfoDto.class);
         Integer newLevel = userInfoDto.getPokeLevel() + 1;
         userInfoService.saveUserInfo(uuid, userInfoDto.getPokeName(), newLevel);
         updateRanking(uuid, newLevel);
         return userInfoDto;
 
+    }
+
+    public UserInfoDto getBeacamonInfo (String uuid) throws IOException {
+        String userInfo = redisConnection.getRedis(uuid);
+        UserInfoDto userInfoDto = mapper.readValue(userInfo, UserInfoDto.class);
+        return userInfoDto;
     }
 
     private void updateRanking (String uuid, Integer pokeLevel) {

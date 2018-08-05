@@ -33,15 +33,15 @@ public class FruitController {
                 UserInfoDto userInfoDto = beacaMonService.upgradeLevel(uuid);
                 userInfoDto.setPokeLevel(userInfoDto.getPokeLevel() + 1);
 
-                return "恭喜你得到樹果！\n種類:" + userInfoDto.getPokeName() +
+                return "恭喜你得到樹果！請按寶箱開啟\n種類:" + userInfoDto.getPokeName() +
                         "\n等級:" + userInfoDto.getPokeLevel() +
-                        "\n排名:" + beacaMonService.getRank(RANKING_FIELD_NAME, uuid);
+                        "\n總排名:" + beacaMonService.getRank(RANKING_FIELD_NAME, uuid);
             } catch (IOException e) {
                 e.printStackTrace();
                 return "You bad bad";
             }
         }
-        return "哎呀！樹果被人搶光了！\n下次請早喔！";
+        return "哎呀！樹果被人搶光了！下次請早喔！";
     }
 
 }

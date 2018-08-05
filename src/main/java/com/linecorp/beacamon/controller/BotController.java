@@ -1,7 +1,9 @@
 package com.linecorp.beacamon.controller;
 
 import com.linecorp.beacamon.dto.BeacamonDto;
+import com.linecorp.beacamon.dto.UserInfoDto;
 import com.linecorp.beacamon.generator.FlexGenerator;
+import com.linecorp.beacamon.service.BeacaMonService;
 import com.linecorp.beacamon.service.FruitService;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.PushMessage;
@@ -36,6 +38,9 @@ public class BotController {
     private LineMessagingClient client;
 
     @Autowired
+    BeacaMonService beacaMonService;
+
+    @Autowired
     UserInfoService userInfoService;
 
     @Autowired
@@ -65,6 +70,8 @@ public class BotController {
     @Value("${ADMIN}")
     String ADMIN;
 
+    @Value("${RANKING_FIELD_NAME}")
+    String RANKING_FIELD_NAME;
 
     @EventMapping
     public TextMessage handleJoinEvent(JoinEvent event) {
@@ -74,10 +81,17 @@ public class BotController {
     Logger logger = LoggerFactory.getLogger(BotController.class);
 
     @EventMapping
-    public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
+    public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws IOException {
         String uuid = event.getSource().getSenderId();
         if (uuid.equals(ADMIN) && event.getMessage().getText().equals("reset food")) {
             fruitService.resetFruitNum();
+        } else if (event.getMessage().getText().equals("#查看情報")) {
+            UserInfoDto userInfoDto = beacaMonService.getBeacamonInfo(uuid);
+            String userInfo =  "種類:" + userInfoDto.getPokeName() +
+                               "\n等級:" + userInfoDto.getPokeLevel() +
+                               "\n總排名:" + beacaMonService.getRank(RANKING_FIELD_NAME, uuid);
+            TextMessage textMessage = new TextMessage(userInfo);
+            pushMessage(event.getSource().getSenderId(), textMessage);
         }
     }
 
@@ -91,31 +105,21 @@ public class BotController {
 
         if (hwid.equals(HARDWARE_ID) && beaconMessage.equals(BEACON_MESSAGE)) {
             BeacamonDto beacamonDto = userInfoService.getBeacamonName(uuid);
-            if(beacamonDto.getBeacamonName().equals(NO_BEACAMON)) {
-                 flexMessage = flexGenerator.getFlexMessage(
-                        beacamonDto.getPictureUrl(),
-                        beacamonDto.getBeacamonName(),
-                        "再挑戰一次吧！",
-                        "line://app/1521000986-rGoo940l",
-                        beacamonDto.getBeacamonName(),
-                        "快來看看你抓到什麼神奇寶貝！"
-
-                );
-            } else {
+            if(!beacamonDto.getBeacamonName().equals(NO_BEACAMON)) {
                 flexMessage = flexGenerator.getFlexMessage(
                         beacamonDto.getPictureUrl(),
                         beacamonDto.getBeacamonName(),
-                        "查看情報",
-                        "line://app/1521000986-rGoo940l",
+                        "查看情報請輸入 #查看情報",
+                        beacamonDto.getPictureUrl(),
                         "恭喜捕獲一隻"+ beacamonDto.getBeacamonName() +"！",
                         "地點",
                         "就在這裡",
                         "數量",
-                        "10 個",
+                        "1 隻",
                         "快來看看你抓到什麼神奇寶貝！"
                 );
+                pushMessage(event.getSource().getSenderId(), flexMessage);
             }
-            pushMessage(event.getSource().getSenderId(), flexMessage);
 
         } else if (hwid.equals(FOOD_HARDWARE_ID) && beaconMessage.equals(FOOD_BEACON_MESSAGE)) {
             if (userInfoService.isHasBeacaMon(uuid) && fruitService.getFruitNum() > 0) {
@@ -128,7 +132,7 @@ public class BotController {
                         "地點",
                         "就在這裡",
                         "數量",
-                        fruitService.getFruitNum() + " 個",
+                         "本次有 10 個",
                         "快來搶樹果喔！"
 
                 );
