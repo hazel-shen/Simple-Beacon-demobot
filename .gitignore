@@ -1,9 +1,13 @@
 .gradle
 /build/
 !gradle/wrapper/gradle-wrapper.jar
+<<<<<<< HEAD
 *.properties
 *.yml
 git
+=======
+
+>>>>>>> 6f0855fcd95a02c8b34e0493e9889477a0a4ae44
 ### STS ###
 .apt_generated
 .classpath
@@ -26,4 +30,8 @@ git
 /nbbuild/
 /dist/
 /nbdist/
+<<<<<<< HEAD
 /.nb-gradle/
+=======
+/.nb-gradle/
+>>>>>>> 6f0855fcd95a02c8b34e0493e9889477a0a4ae44
